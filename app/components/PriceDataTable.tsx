@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentSymbol, selectPriceData, updatePriceData } from '@/store/priceDataSlice'
 
@@ -8,10 +8,12 @@ const PriceDataTable: React.FC = () => {
   const dispatch = useDispatch()
   const currentSymbol = useSelector(selectCurrentSymbol)
   const priceData = useSelector(selectPriceData)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       if (currentSymbol) {
+        setIsLoading(true)
         try {
           const response = await fetch(`/api/getPriceData?symbol=${currentSymbol}`)
           const data = await response.json()
@@ -25,6 +27,8 @@ const PriceDataTable: React.FC = () => {
         } catch (error) {
           console.error('Error fetching data:', error)
           dispatch(updatePriceData([]))
+        } finally {
+          setIsLoading(false)
         }
       }
     }
@@ -44,14 +48,29 @@ const PriceDataTable: React.FC = () => {
       await fetchAndStoreData()
     }
 
-    
-    const interval = setInterval(fetchAllData, 5000)
+    // Initial fetch when component mounts or symbol changes
+    fetchAllData()
+
+    // Set up interval for periodic fetches
+    const interval = setInterval(fetchAllData, 10000)
 
     return () => clearInterval(interval)
   }, [currentSymbol, dispatch])
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-64">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    )
+  }
+
+  if (!currentSymbol) {
+    return <div className="flex items-center flex-col mt-6"><p>Please select a cryptocurrency symbol.</p></div>
+  }
+
   if (!Array.isArray(priceData) || priceData.length === 0) {
-    return <div  className="flex items-center flex-col mt-6"><p>Sorry! No data available for<span className='text-red-500 font-medium'> {currentSymbol}</span></p></div>
+    return <div className="flex items-center flex-col mt-6"><p>Sorry! No data available for<span className='text-red-500 font-medium'> {currentSymbol}</span></p></div>
   }
 
   return (
