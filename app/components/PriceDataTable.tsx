@@ -51,28 +51,34 @@ const PriceDataTable: React.FC = () => {
   }, [currentSymbol, dispatch])
 
   if (!Array.isArray(priceData) || priceData.length === 0) {
-    return <p>No data available</p>
+    return <div  className="flex items-center flex-col mt-6"><p>Sorry! No data available for<span className='text-red-500 font-medium'> {currentSymbol}</span></p></div>
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Symbol</th>
-          <th>Price (USD)</th>
-          <th>Timestamp</th>
-        </tr>
-      </thead>
-      <tbody>
-        {priceData.map((item, index) => (
-          <tr key={index}>
-            <td>{item.symbol}</td>
-            <td>${item.price.toFixed(2)}</td>
-            <td>{new Date(item.timestamp).toLocaleString()}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="flex items-center flex-col mt-6">
+      <div className="overflow-x-auto shadow-md sm:rounded-lg">
+        <table className="lg:w-[90rem] md:w-full sm:w-full text-sm text-center text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope='col' className='px-9 py-3'>Id</th>
+              <th scope="col" className="px-9 py-3">Cryptocurrency</th>
+              <th scope="col" className="px-9 py-3">Price (USD)</th>
+              <th scope="col" className="px-9 py-3">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {priceData.map((item, index) => (
+              <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td className='px-9 py-3'>{index+1}</td>
+                <td className="px-9 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize">{item.symbol}</td>
+                <td className="px-9 py-3">$ {item.price.toFixed(2)}</td>
+                <td className="px-9 py-3">{new Date(item.timestamp).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   )
 }
 
