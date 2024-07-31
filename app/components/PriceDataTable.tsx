@@ -15,6 +15,7 @@ const PriceDataTable: React.FC = () => {
         try {
           const response = await fetch(`/api/getPriceData?symbol=${currentSymbol}`)
           const data = await response.json()
+          console.log('Received data:', data)
           if (Array.isArray(data)) {
             dispatch(updatePriceData(data))
           } else {
@@ -28,8 +29,23 @@ const PriceDataTable: React.FC = () => {
       }
     }
 
-    fetchData()
-    const interval = setInterval(fetchData, 5000)
+    const fetchAndStoreData = async () => {
+      try {
+        const response = await fetch('/api/fetchData')
+        const data = await response.json()
+        console.log('Data fetched and stored:', data)
+      } catch (error) {
+        console.error('Error fetching and storing data:', error)
+      }
+    }
+
+    const fetchAllData = async () => {
+      await fetchData()
+      await fetchAndStoreData()
+    }
+
+    
+    const interval = setInterval(fetchAllData, 5000)
 
     return () => clearInterval(interval)
   }, [currentSymbol, dispatch])

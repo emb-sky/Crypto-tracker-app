@@ -29,6 +29,7 @@ const SymbolChangeModal: React.FC<SymbolChangeModalProps> = ({ isOpen, onClose }
           value={newSymbol}
           onChange={(e) => setNewSymbol(e.target.value)}
           placeholder="Enter new symbol (e.g., bitcoin, ethereum)"
+          required
         />
         <button type="submit">Change Symbol</button>
       </form>
