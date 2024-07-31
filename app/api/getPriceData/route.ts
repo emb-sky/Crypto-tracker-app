@@ -5,6 +5,8 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const symbol = searchParams.get('symbol')
 
+  console.log('Symbol:', symbol);
+
   if (!symbol) {
     return NextResponse.json({ error: 'Symbol is required' }, { status: 400 })
   }
