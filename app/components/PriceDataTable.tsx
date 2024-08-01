@@ -15,7 +15,7 @@ const PriceDataTable: React.FC = () => {
       if (currentSymbol) {
         setIsLoading(true)
         try {
-          const response = await fetch(`/api/getPriceData?symbol=${currentSymbol}`)
+          const response = await fetch(`${window.location.origin}/api/getPriceData?symbol=${currentSymbol}`)
           const data = await response.json()
           console.log('Received data:', data)
           if (Array.isArray(data)) {
